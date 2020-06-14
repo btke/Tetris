@@ -21,7 +21,7 @@ namespace project
 
     abstract class Tetromino{
         public abstract Brush brush {get;}
-        Position[] defaultOrientation; //The first Position in one orientation is the pivot
+        public abstract Position[] defaultOrientation{get;} //The first Position in one orientation is the pivot
         public int numOfOrientations;
         public Position[] orientation(int num){
             var orientation = new Position[defaultOrientation.Length];
