@@ -51,7 +51,7 @@ namespace project
         public override void orientationTransition(Playfield playfield, KeyEventArgs e){
             if (playfield.currentTetrominoOrientation == 1){
                 if  (
-                    playfield.currentTetrominoPivotPosition.y + 2 < Playfield.playfieldHeight &&
+                    playfield.currentTetrominoPivotPosition.y + 2 < Playfield.PlayFieldHeight &&
                     playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                     playfield.grid[playfield.currentTetrominoPivotPosition.x,     playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                     playfield.grid[playfield.currentTetrominoPivotPosition.x,     playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
@@ -65,7 +65,7 @@ namespace project
             }
             else if (playfield.currentTetrominoOrientation == 2){
                 if  (
-                        playfield.currentTetrominoPivotPosition.x + 2 < Playfield.playfieldWidth &&
+                        playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
                         playfield.currentTetrominoPivotPosition.x >= 1 &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
@@ -112,7 +112,7 @@ namespace project
             if (playfield.currentTetrominoOrientation == 1){
                 if (e.KeyCode == Keys.D){
                     if  (
-                        playfield.currentTetrominoPivotPosition.y + 2 < Playfield.playfieldHeight &&
+                        playfield.currentTetrominoPivotPosition.y + 2 < Playfield.PlayFieldHeight &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x,     playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x,     playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
@@ -154,7 +154,7 @@ namespace project
                 }
                 else if (e.KeyCode == Keys.A){
                     if  (
-                        playfield.currentTetrominoPivotPosition.x + 2 < Playfield.playfieldWidth &&
+                        playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
                         playfield.currentTetrominoPivotPosition.y >= 1 &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
@@ -183,8 +183,8 @@ namespace project
                 }
                 else if (e.KeyCode == Keys.A){
                     if  (
-                        playfield.currentTetrominoPivotPosition.x + 1 < Playfield.playfieldWidth &&
-                        playfield.currentTetrominoPivotPosition.y + 2 < Playfield.playfieldHeight &&
+                        playfield.currentTetrominoPivotPosition.x + 1 < Playfield.PlayFieldWidth &&
+                        playfield.currentTetrominoPivotPosition.y + 2 < Playfield.PlayFieldHeight &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
@@ -199,7 +199,7 @@ namespace project
             else if (playfield.currentTetrominoOrientation == 4){
                 if (e.KeyCode == Keys.D){
                     if  (
-                            playfield.currentTetrominoPivotPosition.x + 2 < Playfield.playfieldWidth &&
+                            playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
@@ -213,7 +213,7 @@ namespace project
                 else if (e.KeyCode == Keys.A){
                     if  (
                         playfield.currentTetrominoPivotPosition.x >= 2 &&
-                        playfield.currentTetrominoPivotPosition.y + 1 < Playfield.playfieldHeight &&
+                        playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
@@ -272,7 +272,7 @@ namespace project
                 }
                 else if (e.KeyCode == Keys.A){
                     if  (
-                        playfield.currentTetrominoPivotPosition.y + 2 < Playfield.playfieldHeight  &&
+                        playfield.currentTetrominoPivotPosition.y + 2 < Playfield.PlayFieldHeight  &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
@@ -287,8 +287,8 @@ namespace project
             else if (playfield.currentTetrominoOrientation == 2){
                 if (e.KeyCode == Keys.D){
                     if  (
-                            playfield.currentTetrominoPivotPosition.x + 2 < Playfield.playfieldWidth &&
-                            playfield.currentTetrominoPivotPosition.y + 1 < Playfield.playfieldHeight &&
+                            playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
+                            playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
@@ -317,7 +317,7 @@ namespace project
                 if (e.KeyCode == Keys.D){
                     if  (
                             playfield.currentTetrominoPivotPosition.x >= 1 &&
-                            playfield.currentTetrominoPivotPosition.y + 2 < Playfield.playfieldHeight &&
+                            playfield.currentTetrominoPivotPosition.y + 2 < Playfield.PlayFieldHeight &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
@@ -345,7 +345,7 @@ namespace project
             else if (playfield.currentTetrominoOrientation == 4){
                 if (e.KeyCode == Keys.D){
                     if  (
-                            playfield.currentTetrominoPivotPosition.x + 2 < Playfield.playfieldWidth &&
+                            playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
@@ -358,7 +358,7 @@ namespace project
                 }
                 else if (e.KeyCode == Keys.A){
                     if  (
-                        playfield.currentTetrominoPivotPosition.x + 2 < Playfield.playfieldWidth &&
+                        playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
@@ -429,7 +429,7 @@ namespace project
         public override void orientationTransition(Playfield playfield, KeyEventArgs e){
             if (playfield.currentTetrominoOrientation == 1){
                 if  (
-                    playfield.currentTetrominoPivotPosition.y + 1 < Playfield.playfieldHeight &&
+                    playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight &&
                     playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                     playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
                     playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty
@@ -481,7 +481,7 @@ namespace project
             if (playfield.currentTetrominoOrientation == 1){
                 if (e.KeyCode == Keys.D){
                     if  (
-                        playfield.currentTetrominoPivotPosition.y + 1 < Playfield.playfieldHeight &&
+                        playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
@@ -492,7 +492,7 @@ namespace project
                 }
                 else if (e.KeyCode == Keys.A){
                     if  (
-                        playfield.currentTetrominoPivotPosition.y + 1 < Playfield.playfieldHeight  &&
+                        playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight  &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
@@ -553,7 +553,7 @@ namespace project
             else if (playfield.currentTetrominoOrientation == 4){
                 if (e.KeyCode == Keys.D){
                     if  (
-                            playfield.currentTetrominoPivotPosition.x + 1 < Playfield.playfieldWidth &&
+                            playfield.currentTetrominoPivotPosition.x + 1 < Playfield.PlayFieldWidth &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
@@ -564,7 +564,7 @@ namespace project
                 }
                 else if (e.KeyCode == Keys.A){
                     if  (
-                        playfield.currentTetrominoPivotPosition.x + 1 < Playfield.playfieldWidth &&
+                        playfield.currentTetrominoPivotPosition.x + 1 < Playfield.PlayFieldWidth &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
@@ -605,7 +605,7 @@ namespace project
         public override void orientationTransition(Playfield playfield, KeyEventArgs e){
             if (playfield.currentTetrominoOrientation == 1){
                 if  (
-                    playfield.currentTetrominoPivotPosition.y + 1 < Playfield.playfieldHeight &&
+                    playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight &&
                     playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                     playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
                     playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty
@@ -615,7 +615,7 @@ namespace project
             }
             else if (playfield.currentTetrominoOrientation == 2){
                 if  (
-                        playfield.currentTetrominoPivotPosition.x + 1 <Playfield.playfieldWidth &&
+                        playfield.currentTetrominoPivotPosition.x + 1 <Playfield.PlayFieldWidth &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
                         playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty
@@ -629,9 +629,9 @@ namespace project
 
 
     class Playfield{
-        public const int playfieldWidth = 10;
-        public const int playfieldHeight = 20;
-        public State[,] grid = new State[playfieldWidth, playfieldHeight];
+        public const int PlayFieldWidth = 10;
+        public const int PlayFieldHeight = 20;
+        public State[,] grid = new State[PlayFieldWidth, PlayFieldHeight];
         public int currentTetrominoOrientation = 1; // ranges from 1 to at most 4
         public int nextTetrominoOrientation = 1; // ranges from 1 to at most 4
         public Position currentTetrominoPivotPosition = new Position(4, 2);
@@ -646,8 +646,8 @@ namespace project
         public int lines = 0;
 
         public Playfield(){
-            for (int x = 0; x < playfieldWidth; ++x){
-                for (int y = 0; y < playfieldHeight; ++y){
+            for (int x = 0; x < PlayFieldWidth; ++x){
+                for (int y = 0; y < PlayFieldHeight; ++y){
                     grid[x, y] = Empty;
                 }
             }
@@ -688,8 +688,8 @@ namespace project
                 if (
                     x < 0 ||
                     y < 0 ||
-                    x >= playfieldWidth ||
-                    y >= playfieldHeight ||
+                    x >= PlayFieldWidth ||
+                    y >= PlayFieldHeight ||
                     grid[x, y] == Fixed
                     ){
                     return false;
@@ -709,7 +709,7 @@ namespace project
             changed();
         }
         public void restart(){
-            grid = new State[playfieldWidth, playfieldHeight];
+            grid = new State[PlayFieldWidth, PlayFieldHeight];
             nextTurn();
             changed();
         }
@@ -728,9 +728,9 @@ namespace project
             }
             // remeber the lines to be deleted
             List<int> linesToBeCleared = new List<int>();
-            for (int y = playfieldHeight - 1; y >= 0 && linesToBeCleared.Count < 4; --y){
+            for (int y = PlayFieldHeight - 1; y >= 0 && linesToBeCleared.Count < 4; --y){
                 bool doClear = true;
-                for (int x = 0; x < playfieldWidth; ++x){
+                for (int x = 0; x < PlayFieldWidth; ++x){
                     if(grid[x, y] != Fixed){
                         doClear = false;
                     }
@@ -747,11 +747,11 @@ namespace project
             currentLevel = (lines / 30 % 4 + 1) > 4? 4 : (lines / 30 % 4 + 1);
             myTimer.Interval = (int)(1000 * (1 - (currentLevel - 1) * 0.2));
             // created a new grid without the deleted lines
-            var newGrid = new State[playfieldWidth, playfieldHeight];
-            int yForNewGrid = playfieldHeight - 1;
-            for (int y = playfieldHeight - 1; y >= 0; --y){
+            var newGrid = new State[PlayFieldWidth, PlayFieldHeight];
+            int yForNewGrid = PlayFieldHeight - 1;
+            for (int y = PlayFieldHeight - 1; y >= 0; --y){
                 if(!linesToBeCleared.Contains(y)){
-                    for (int x = 0; x < playfieldWidth; ++x){
+                    for (int x = 0; x < PlayFieldWidth; ++x){
                         newGrid[x, yForNewGrid] = grid[x, y];
                     }
                     --yForNewGrid;
@@ -929,8 +929,8 @@ namespace project
                     g.DrawString("F2: Pause/Resume", new Font(FontFamily.GenericMonospace, 10), Brushes.Black, new PointF((float)300, 540));
                     g.DrawString("F3: Exit", new Font(FontFamily.GenericMonospace, 10), Brushes.Black, new PointF((float)300, 550));
                     // draw the fixed blocks
-                    for (int y = 0; y < Playfield.playfieldHeight; ++y){
-                        for (int x = 0; x < Playfield.playfieldWidth; ++x){
+                    for (int y = 0; y < Playfield.PlayFieldHeight; ++y){
+                        for (int x = 0; x < Playfield.PlayFieldWidth; ++x){
                             if (playfield.grid[x, y] == Fixed){
                                 g.DrawRectangle(new Pen(Color.Black, 1), new Rectangle(3 + x * 29, 3 + y * 29, 29, 29));
                                 g.FillRectangle(Brushes.LightGray, 4 + x * 29, 4 + y * 29, 28, 28);
