@@ -21,7 +21,18 @@ namespace project
 
     abstract class Tetromino{
         public abstract Brush brush {get;}
-        public abstract Position[][] orientations {get;} //The first Position in one orientation is the pivot
+        Position[] defaultOrientation; //The first Position in one orientation is the pivot
+        public int numOfOrientations;
+        public Position[] orientation(int num){
+            var orientation = new Position[defaultOrientation.Length];
+            defaultOrientation.CopyTo(orientation, 0);
+            for(int i = 0; i < num; ++i){
+                for(int j = 1; j < 4; ++j){
+                    (orientation[j].x, orientation[j].y) = (orientation[j].y, -orientation[j].x);
+                }
+            }
+            return orientation;
+        }
         public abstract float[] centreRelativeToPivot {get;}
         public abstract void orientationTransition(Playfield playfield, KeyEventArgs e);
     }
@@ -29,18 +40,11 @@ namespace project
     class I: Tetromino{
         // I's pivot is as the following
         // IPII
+        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(1, 0), new Position(2, 0)};
+        new public int numOfOrientations = 2;
         public override Brush brush {
             get{
                 return Brushes.LightSkyBlue;
-            }
-        }
-        public override Position[][] orientations {
-            
-            get{
-                Position[][] o = new Position[3][];
-                o[1] = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(1, 0), new Position(2, 0)};
-                o[2] = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(0, 1), new Position(0, 2)};
-                return o;
             }
         }
         public override float[] centreRelativeToPivot {
@@ -85,23 +89,13 @@ namespace project
         // J's pivot is as the following
         // J
         // PJJ
+        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(1, 0), new Position(2, 0)};
+        new public int numOfOrientations = 4;
         public override Brush brush {
             get{
                 return Brushes.DarkBlue;
             }
         }
-        public override Position[][] orientations {
-            
-            get{
-                Position[][] o = new Position[5][];
-                o[1] = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(1, 0), new Position(2, 0)};
-                o[2] = new Position[4]{new Position(0, 0), new Position(0, 1), new Position(0, 2), new Position(1, 0)};
-                o[3] = new Position[4]{new Position(0, 0), new Position(-2, 0), new Position(-1, 0), new Position(0, 1)};
-                o[4] = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, -2), new Position(0, -1)};
-                return o;
-            }
-        }
-
         public override float[] centreRelativeToPivot {
             get{
                 return new float[5]{0, 1, (float)0.5, -1, (float)-0.5};
@@ -232,23 +226,13 @@ namespace project
         // L's pivot is as the follwoing
         //   L
         // LLP
+        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(-2, 0), new Position(-1, 0), new Position(0, -1)};
+        new public int numOfOrientations = 4;
         public override Brush brush {
             get{
                 return Brushes.Orange;
             }
         }
-        public override Position[][] orientations {
-            
-            get{
-                Position[][] o = new Position[5][];
-                o[1] = new Position[4]{new Position(0, 0), new Position(-2, 0), new Position(-1, 0), new Position(0, -1)};
-                o[2] = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(0, -2), new Position(1, 0)};
-                o[3] = new Position[4]{new Position(0, 0), new Position(0, 1), new Position(1, 0), new Position(2, 0)};
-                o[4] = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, 1), new Position(0, 2)};
-                return o;
-            }
-        }
-
         public override float[] centreRelativeToPivot {
             get{
                 return new float[5]{0, -1, (float)0.5, 1, (float)-0.5};
@@ -377,20 +361,13 @@ namespace project
         // O's pivot is as the following
         // OO
         // PO
+        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(1, -1), new Position(1, 0)};
+        new public int numOfOrientations = 1;
         public override Brush brush {
             get{
                 return Brushes.Yellow;
             }
         }
-        public override Position[][] orientations {
-            
-            get{
-                Position[][] o = new Position[2][];
-                o[1] = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(1, -1), new Position(1, 0)};
-                return o;
-            }
-        }
-
         public override float[] centreRelativeToPivot {
             get{
                 return new float[2]{0, (float)0.5};
@@ -406,21 +383,13 @@ namespace project
         // S's pivot is as the following
         //  SS
         // SP
+        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, -1)};
+        new public int numOfOrientations = 2;
         public override Brush brush {
             get{
                 return Brushes.LawnGreen;
             }
         }
-        public override Position[][] orientations {
-            
-            get{
-                Position[][] o = new Position[3][];
-                o[1] = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, -1)};
-                o[2] = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(1, 0), new Position(1, 1)};
-                return o;
-            }
-        }
-
         public override float[] centreRelativeToPivot {
             get{
                 return new float[3]{0, 0, (float)0.5};
@@ -454,23 +423,13 @@ namespace project
         // T's pivot is as the follwoing
         //  T
         // TPT
+        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, 0)};
+        new public int numOfOrientations = 4;
         public override Brush brush {
             get{
                 return Brushes.Purple;
             }
         }
-        public override Position[][] orientations {
-            
-            get{
-                Position[][] o = new Position[5][];
-                o[1] = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, 0)};
-                o[2] = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(0, 1), new Position(1, 0)};
-                o[3] = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, 1), new Position(1, 0)};
-                o[4] = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(0, 1)};
-                return o;
-            }
-        }
-
         public override float[] centreRelativeToPivot {
             get{
                 return new float[5]{0, 0, (float)0.5, 0, (float)-0.5};
@@ -581,21 +540,13 @@ namespace project
         // Z's pivot is as the following
         // ZZ
         //  PZ
+        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, -1), new Position(0, -1), new Position(1, 0)};
+        new public int numOfOrientations = 2;
         public override Brush brush {
             get{
                 return Brushes.Red;
             }
         }
-        public override Position[][] orientations {
-            
-            get{
-                Position[][] o = new Position[3][];
-                o[1] = new Position[4]{new Position(0, 0), new Position(-1, -1), new Position(0, -1), new Position(1, 0)};
-                o[2] = new Position[4]{new Position(0, 0), new Position(-1, 1), new Position(-1, 0), new Position(0, -1)};
-                return o;
-            }
-        }
-
         public override float[] centreRelativeToPivot {
             get{
                 return new float[3]{0, 0, (float)-0.5};
@@ -681,8 +632,7 @@ namespace project
             }
         }
         public bool currentTetrominoOneStepMovable(int xDirection, int yDirection){
-            Position[][] orientations = currentTetromino.orientations;
-            foreach (Position p in orientations[currentTetrominoOrientation]){
+            foreach (Position p in currentTetromino.orientation(currentTetrominoOrientation)){
                 int x = currentTetrominoPivotPosition.x + p.x + xDirection;
                 int y = currentTetrominoPivotPosition.y + p.y + yDirection;
                 if (
@@ -705,7 +655,7 @@ namespace project
             currentTetrominoPivotPosition = new Position(4, 2);
 
             nextTetromino = newTetrominoRandomGenerator();
-            nextTetrominoOrientation = ran.Next(1, nextTetromino.orientations.Length);
+            nextTetrominoOrientation = ran.Next(1, nextTetromino.numOfOrientations);
             changed();
         }
         public void restart(){
@@ -714,8 +664,7 @@ namespace project
             changed();
         }
         public void fixCurrentTetrominoAndClearLines(){
-            Position[][] orientations = currentTetromino.orientations;
-            foreach (Position p in orientations[currentTetrominoOrientation]){
+            foreach (Position p in currentTetromino.orientation(currentTetrominoOrientation)){
                 if (grid[currentTetrominoPivotPosition.x + p.x, currentTetrominoPivotPosition.y + p.y] == Fixed){
                     myTimer.Stop();
                     restart();
@@ -904,10 +853,9 @@ namespace project
                     //draw the next
                     g.DrawString("Next", new Font(FontFamily.GenericMonospace, 30), Brushes.Black, new PointF((float)317.5, 35));
 
-                    Position[][] nextTetriminoOrientations = playfield.nextTetromino.orientations;
                     Brush nextTetriminoBrush = playfield.nextTetromino.brush;
                     float centreRelativeToPivot = playfield.nextTetromino.centreRelativeToPivot[playfield.nextTetrominoOrientation];
-                    foreach (Position p in nextTetriminoOrientations[playfield.nextTetrominoOrientation]){
+                    foreach (Position p in playfield.nextTetromino.orientation(playfield.nextTetrominoOrientation)){
                         g.DrawRectangle(new Pen(Color.Black, 1), new Rectangle(357 + p.x * 29 - (int)(centreRelativeToPivot * 29), 140 + p.y * 29, 29, 29));
                         g.FillRectangle(nextTetriminoBrush, 358 + p.x * 29 - (int)(centreRelativeToPivot * 29), 141 + p.y * 29, 28, 28);
                     }
@@ -939,11 +887,10 @@ namespace project
                         }
                     }
                     //draw the current falling tetrimino
-                    Position[][] currentTetriminoOrientations = playfield.currentTetromino.orientations;
                     Brush currentTetriminoBrush = playfield.currentTetromino.brush;
                     Position currentTetriminoPivot = playfield.currentTetrominoPivotPosition;
                     
-                    foreach (Position p in currentTetriminoOrientations[playfield.currentTetrominoOrientation]){
+                    foreach (Position p in playfield.currentTetromino.orientation(playfield.currentTetrominoOrientation)){
                         g.DrawRectangle(new Pen(Color.Black, 1), new Rectangle(3 + (p.x + currentTetriminoPivot.x) * 29, 3 + (p.y + currentTetriminoPivot.y) * 29, 29, 29));
                         g.FillRectangle(currentTetriminoBrush, 4 + (p.x + currentTetriminoPivot.x) * 29, 4 + (p.y + currentTetriminoPivot.y) * 29, 28, 28);
                     }
