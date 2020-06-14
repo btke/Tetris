@@ -21,14 +21,24 @@ namespace project
 
     abstract class Tetromino{
         public abstract Brush brush {get;}
-        public abstract Position[] defaultOrientation{get;} //The first Position in one orientation is the pivot
+        protected Position[] defaultOrientation; //The first Position in one orientation is the pivot
         public int numOfOrientations;
         public Position[] orientation(int num){
-            var orientation = new Position[defaultOrientation.Length];
-            defaultOrientation.CopyTo(orientation, 0);
-            for(int i = 0; i < num; ++i){
+            var orientation = new Position[4];
+            for(int i = 0; i < 4; ++i){
+                orientation[i] = new Position(defaultOrientation[i].x,defaultOrientation[i].y);
+            }
+            
+            //defaultOrientation.CopyTo(ref orientation, 0);
+            /*
+            WriteLine("start");
+            foreach (Position p in defaultOrientation){
+                WriteLine($"{p.x},{p.y}");
+            }
+            */
+            for(int i = 0; i < num - 1; ++i){
                 for(int j = 1; j < 4; ++j){
-                    (orientation[j].x, orientation[j].y) = (orientation[j].y, -orientation[j].x);
+                    (orientation[j].x, orientation[j].y) = (-orientation[j].y, orientation[j].x);
                 }
             }
             return orientation;
@@ -40,8 +50,10 @@ namespace project
     class I: Tetromino{
         // I's pivot is as the following
         // IPII
-        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(1, 0), new Position(2, 0)};
-        new public int numOfOrientations = 2;
+        public I(){
+            defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(1, 0), new Position(2, 0)};
+            numOfOrientations = 2;
+        }
         public override Brush brush {
             get{
                 return Brushes.LightSkyBlue;
@@ -89,8 +101,10 @@ namespace project
         // J's pivot is as the following
         // J
         // PJJ
-        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(1, 0), new Position(2, 0)};
-        new public int numOfOrientations = 4;
+        public J(){
+            defaultOrientation = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(1, 0), new Position(2, 0)};
+            numOfOrientations = 4;
+        }
         public override Brush brush {
             get{
                 return Brushes.DarkBlue;
@@ -226,8 +240,10 @@ namespace project
         // L's pivot is as the follwoing
         //   L
         // LLP
-        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(-2, 0), new Position(-1, 0), new Position(0, -1)};
-        new public int numOfOrientations = 4;
+        public L(){
+            defaultOrientation = new Position[4]{new Position(0, 0), new Position(-2, 0), new Position(-1, 0), new Position(0, -1)};
+            numOfOrientations = 4;
+        }
         public override Brush brush {
             get{
                 return Brushes.Orange;
@@ -329,7 +345,7 @@ namespace project
             else if (playfield.currentTetrominoOrientation == 4){
                 if (e.KeyCode == Keys.D){
                     if  (
-                            playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
+                            playfield.currentTetrominoPivotPosition.x >= 2 &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
                             playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
@@ -361,8 +377,10 @@ namespace project
         // O's pivot is as the following
         // OO
         // PO
-        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(1, -1), new Position(1, 0)};
-        new public int numOfOrientations = 1;
+        public O(){
+            defaultOrientation = new Position[4]{new Position(0, 0), new Position(0, -1), new Position(1, -1), new Position(1, 0)};
+            numOfOrientations = 1;
+        }
         public override Brush brush {
             get{
                 return Brushes.Yellow;
@@ -383,8 +401,10 @@ namespace project
         // S's pivot is as the following
         //  SS
         // SP
-        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, -1)};
-        new public int numOfOrientations = 2;
+        public S(){
+            defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, -1)};
+            numOfOrientations = 2;
+        }
         public override Brush brush {
             get{
                 return Brushes.LawnGreen;
@@ -423,8 +443,10 @@ namespace project
         // T's pivot is as the follwoing
         //  T
         // TPT
-        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, 0)};
-        new public int numOfOrientations = 4;
+        public T(){
+            defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, 0)};
+            numOfOrientations = 4;
+        }
         public override Brush brush {
             get{
                 return Brushes.Purple;
@@ -540,8 +562,10 @@ namespace project
         // Z's pivot is as the following
         // ZZ
         //  PZ
-        Position[] defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, -1), new Position(0, -1), new Position(1, 0)};
-        new public int numOfOrientations = 2;
+        public Z(){
+            defaultOrientation = new Position[4]{new Position(0, 0), new Position(-1, -1), new Position(0, -1), new Position(1, 0)};
+            numOfOrientations = 2;
+        }
         public override Brush brush {
             get{
                 return Brushes.Red;
@@ -655,7 +679,7 @@ namespace project
             currentTetrominoPivotPosition = new Position(4, 2);
 
             nextTetromino = newTetrominoRandomGenerator();
-            nextTetrominoOrientation = ran.Next(1, nextTetromino.numOfOrientations);
+            nextTetrominoOrientation = ran.Next(1, nextTetromino.numOfOrientations + 1);
             changed();
         }
         public void restart(){
@@ -855,6 +879,7 @@ namespace project
 
                     Brush nextTetriminoBrush = playfield.nextTetromino.brush;
                     float centreRelativeToPivot = playfield.nextTetromino.centreRelativeToPivot[playfield.nextTetrominoOrientation];
+                    //WriteLine(centreRelativeToPivot);
                     foreach (Position p in playfield.nextTetromino.orientation(playfield.nextTetrominoOrientation)){
                         g.DrawRectangle(new Pen(Color.Black, 1), new Rectangle(357 + p.x * 29 - (int)(centreRelativeToPivot * 29), 140 + p.y * 29, 29, 29));
                         g.FillRectangle(nextTetriminoBrush, 358 + p.x * 29 - (int)(centreRelativeToPivot * 29), 141 + p.y * 29, 28, 28);
@@ -889,7 +914,15 @@ namespace project
                     //draw the current falling tetrimino
                     Brush currentTetriminoBrush = playfield.currentTetromino.brush;
                     Position currentTetriminoPivot = playfield.currentTetrominoPivotPosition;
-                    
+                    /*
+                    WriteLine("start");
+                    WriteLine(playfield.currentTetrominoOrientation);
+                    foreach (Position p in playfield.currentTetromino.orientation(playfield.currentTetrominoOrientation)){
+                        
+                        WriteLine($"{p.x},{p.y}");
+                    }
+                    */
+                    WriteLine(playfield.currentTetrominoOrientation);
                     foreach (Position p in playfield.currentTetromino.orientation(playfield.currentTetrominoOrientation)){
                         g.DrawRectangle(new Pen(Color.Black, 1), new Rectangle(3 + (p.x + currentTetriminoPivot.x) * 29, 3 + (p.y + currentTetriminoPivot.y) * 29, 29, 29));
                         g.FillRectangle(currentTetriminoBrush, 4 + (p.x + currentTetriminoPivot.x) * 29, 4 + (p.y + currentTetriminoPivot.y) * 29, 28, 28);
