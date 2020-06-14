@@ -8,6 +8,7 @@ using System.Drawing;
 using static System.Console;
 using static State;
 using static GameStatus;
+using static System.Math;
 
 enum State{Empty, Falling, Fixed};
 enum GameStatus{Intro, Game, Gameover};
@@ -43,6 +44,93 @@ namespace project
             }
             return orientation;
         }
+        public bool orientationTransitionPathSweepCheck(int from, int to, Playfield playfield){
+            Position[] fromOrientation = orientation(from);
+            Position[] toOrientation = orientation(to);
+            bool sweepCheck = true;
+            for(int i = 1; i < 4; ++i){
+                int incrementX = toOrientation[i].x - fromOrientation[i].x;
+                int incrementY = toOrientation[i].y - fromOrientation[i].y;
+                int xFirstDistance = 0;
+                int yFirstDistance = 0;
+                bool xFirstRotatable = true;
+                bool yFirstRotatable = true;
+                // check the rotation is within the grid
+                int fromXBound = playfield.currentTetrominoPivotPosition.x + fromOrientation[i].x;
+                int fromYBound = playfield.currentTetrominoPivotPosition.y + fromOrientation[i].y;
+                int toXBound = playfield.currentTetrominoPivotPosition.x + toOrientation[i].x;
+                int toYBound = playfield.currentTetrominoPivotPosition.y + toOrientation[i].y;
+                WriteLine("here2");
+                if  ( 
+                        (fromXBound >= 0 && fromXBound < Playfield.PlayFieldWidth) &&
+                        (fromYBound >= 0 && fromYBound < Playfield.PlayFieldHeight) &&
+                        (toXBound >= 0 && toXBound < Playfield.PlayFieldWidth) &&
+                        (toYBound >= 0 && toYBound < Playfield.PlayFieldHeight)
+                    ){
+                        // calculate the total distance to pivot if going x direction first
+                        WriteLine("here8");
+                        if (incrementX != 0){
+                            for (int j = Sign(incrementX); Abs(j) <= Abs(incrementX); j += Sign(incrementX)){
+                                xFirstDistance += Abs(fromOrientation[i].x + j) + Abs(fromOrientation[i].y);
+                                if (playfield.grid[playfield.currentTetrominoPivotPosition.x + fromOrientation[i].x + j, playfield.currentTetrominoPivotPosition.y + fromOrientation[i].y] == Fixed){
+                                    xFirstRotatable = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (xFirstRotatable == true && incrementY != 0){
+                            for (int j = Sign(incrementY); Abs(j) <= Abs(incrementY); j += Sign(incrementY)){
+                                xFirstDistance += Abs(fromOrientation[i].x + incrementX) + Abs(fromOrientation[i].y + j);
+                                if (playfield.grid[playfield.currentTetrominoPivotPosition.x + fromOrientation[i].x + incrementX, playfield.currentTetrominoPivotPosition.y + fromOrientation[i].y + j] == Fixed){
+                                    xFirstRotatable = false;
+                                    break;
+                                }
+                            }
+                        }
+                        // calculate the total distance to pivot if going y direction first
+                        WriteLine("here9");
+                        if (incrementY != 0){
+                            for (int j = Sign(incrementY); Abs(j) <= Abs(incrementY); j += Sign(incrementY)){
+                                yFirstDistance += Abs(fromOrientation[i].x) + Abs(fromOrientation[i].y + j);
+                                if (playfield.grid[playfield.currentTetrominoPivotPosition.x + fromOrientation[i].x, playfield.currentTetrominoPivotPosition.y + fromOrientation[i].y + j] == Fixed){
+                                    yFirstRotatable = false;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if(yFirstRotatable == true && incrementX != 0){
+                            for (int j = Sign(incrementX); Abs(j) <= Abs(incrementX); j += Sign(incrementX)){
+                                yFirstDistance += Abs(fromOrientation[i].x + j) + Abs(fromOrientation[i].y + incrementY);
+                                if (playfield.grid[playfield.currentTetrominoPivotPosition.x + fromOrientation[i].x + j, playfield.currentTetrominoPivotPosition.y + fromOrientation[i].y + incrementY] == Fixed){
+                                    yFirstRotatable = false;
+                                    break;
+                                }
+                            }
+                        }
+                        WriteLine("here3");
+                    }
+                else{
+                    WriteLine("here4");
+                    xFirstRotatable = false;
+                    yFirstRotatable = false;
+                }
+                // check that each block is rotatable
+                WriteLine("here5");
+                if  (
+                    (xFirstDistance >= yFirstDistance && xFirstRotatable == true) ||
+                    (yFirstDistance >= xFirstDistance && yFirstRotatable == true)
+                    ){
+                    WriteLine("here6");
+                    continue;
+                }
+                else{
+                    WriteLine("here7");
+                    return false;
+                }
+            }
+            return sweepCheck;
+        }
         public abstract float[] centreRelativeToPivot {get;}
         public abstract void orientationTransition(Playfield playfield, KeyEventArgs e);
     }
@@ -65,34 +153,10 @@ namespace project
             }
         }
         public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            if (playfield.currentTetrominoOrientation == 1){
-                if  (
-                    playfield.currentTetrominoPivotPosition.y + 2 < Playfield.PlayFieldHeight &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x,     playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x,     playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x,     playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                ){
-                    playfield.changeCurrentTetrominoOrientation(2);
-                }
-            }
-            else if (playfield.currentTetrominoOrientation == 2){
-                if  (
-                        playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
-                        playfield.currentTetrominoPivotPosition.x >= 1 &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(1);
-                }
+            int from = playfield.currentTetrominoOrientation;
+            int to = from % numOfOrientations + 1;
+            if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                playfield.changeCurrentTetrominoOrientation(to);
             }
         }
     }
@@ -117,120 +181,18 @@ namespace project
         }
 
         public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            if (playfield.currentTetrominoOrientation == 1){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.y + 2 < Playfield.PlayFieldHeight &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x,     playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x,     playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(2);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.x >= 1 &&
-                        playfield.currentTetrominoPivotPosition.y - 2 >= 0  &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y - 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(4);
-                    }
+            int from = playfield.currentTetrominoOrientation;
+            int to;
+            if (e.KeyCode == Keys.D){
+                to = from % numOfOrientations + 1;
+                if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                    playfield.changeCurrentTetrominoOrientation(to);
                 }
             }
-            else if (playfield.currentTetrominoOrientation == 2){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                            playfield.currentTetrominoPivotPosition.x - 2 >= 0 &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                        ){
-                            playfield.changeCurrentTetrominoOrientation(3);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
-                        playfield.currentTetrominoPivotPosition.y >= 1 &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(1);
-                    }
-                }
-            }
-            else if (playfield.currentTetrominoOrientation == 3){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                            playfield.currentTetrominoPivotPosition.y >= 2 &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 2] == Empty
-                        ){
-                            playfield.changeCurrentTetrominoOrientation(4);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.x + 1 < Playfield.PlayFieldWidth &&
-                        playfield.currentTetrominoPivotPosition.y + 2 < Playfield.PlayFieldHeight &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(2);
-                    }
-                }
-            }
-            else if (playfield.currentTetrominoOrientation == 4){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                            playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y    ] == Empty
-                        ){
-                            playfield.changeCurrentTetrominoOrientation(1);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.x >= 2 &&
-                        playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(3);
-                    }
+            else if (e.KeyCode == Keys.A){
+                to = (from + 2) % numOfOrientations + 1;
+                if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                    playfield.changeCurrentTetrominoOrientation(to);
                 }
             }
         }
@@ -256,118 +218,18 @@ namespace project
         }
 
         public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            if (playfield.currentTetrominoOrientation == 1){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.y >= 2 &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(2);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.y + 2 < Playfield.PlayFieldHeight  &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 2] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(4);
-                    }
+            int from = playfield.currentTetrominoOrientation;
+            int to;
+            if (e.KeyCode == Keys.D){
+                to = from % numOfOrientations + 1;
+                if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                    playfield.changeCurrentTetrominoOrientation(to);
                 }
             }
-            else if (playfield.currentTetrominoOrientation == 2){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                            playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
-                            playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y    ] == Empty
-                        ){
-                            playfield.changeCurrentTetrominoOrientation(3);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.x >= 2 &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(1);
-                    }
-                }
-            }
-            else if (playfield.currentTetrominoOrientation == 3){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                            playfield.currentTetrominoPivotPosition.x >= 1 &&
-                            playfield.currentTetrominoPivotPosition.y + 2 < Playfield.PlayFieldHeight &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                        ){
-                            playfield.changeCurrentTetrominoOrientation(4);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.y >= 2 &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(2);
-                    }
-                }
-            }
-            else if (playfield.currentTetrominoOrientation == 4){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                            playfield.currentTetrominoPivotPosition.x >= 2 &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y - 1] == Empty
-                        ){
-                            playfield.changeCurrentTetrominoOrientation(1);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.x + 2 < Playfield.PlayFieldWidth &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 2] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 2, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(3);
-                    }
+            else if (e.KeyCode == Keys.A){
+                to = (from + 2) % numOfOrientations + 1;
+                if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                    playfield.changeCurrentTetrominoOrientation(to);
                 }
             }
         }
@@ -416,25 +278,14 @@ namespace project
             }
         }
         public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            if (playfield.currentTetrominoOrientation == 1){
-                if  (
-                    playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                ){
-                    playfield.changeCurrentTetrominoOrientation(2);
-                }
-            }
-            else if (playfield.currentTetrominoOrientation == 2){
-                if  (
-                        playfield.currentTetrominoPivotPosition.x >= 1 &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(1);
-                }
+            int from = playfield.currentTetrominoOrientation;
+            int to = from % numOfOrientations + 1;
+            WriteLine("here0");
+            Write(from);
+            Write(to);
+            if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                WriteLine("here1");
+                playfield.changeCurrentTetrominoOrientation(to);
             }
         }
     }
@@ -459,100 +310,18 @@ namespace project
         }
 
         public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            if (playfield.currentTetrominoOrientation == 1){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(2);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight  &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(4);
-                    }
+            int from = playfield.currentTetrominoOrientation;
+            int to;
+            if (e.KeyCode == Keys.D){
+                to = from % numOfOrientations + 1;
+                if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                    playfield.changeCurrentTetrominoOrientation(to);
                 }
             }
-            else if (playfield.currentTetrominoOrientation == 2){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                            playfield.currentTetrominoPivotPosition.x >= 1 &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                        ){
-                            playfield.changeCurrentTetrominoOrientation(3);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.x >= 1 &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(1);
-                    }
-                }
-            }
-            else if (playfield.currentTetrominoOrientation == 3){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                            playfield.currentTetrominoPivotPosition.y >= 1 &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                        ){
-                            playfield.changeCurrentTetrominoOrientation(4);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.y >= 2 &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x    , playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(2);
-                    }
-                }
-            }
-            else if (playfield.currentTetrominoOrientation == 4){
-                if (e.KeyCode == Keys.D){
-                    if  (
-                            playfield.currentTetrominoPivotPosition.x + 1 < Playfield.PlayFieldWidth &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                            playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty
-                        ){
-                            playfield.changeCurrentTetrominoOrientation(1);
-                    }
-                }
-                else if (e.KeyCode == Keys.A){
-                    if  (
-                        playfield.currentTetrominoPivotPosition.x + 1 < Playfield.PlayFieldWidth &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(3);
-                    }
+            else if (e.KeyCode == Keys.A){
+                to = (from + 2) % numOfOrientations + 1;
+                if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                    playfield.changeCurrentTetrominoOrientation(to);
                 }
             }
         }
@@ -578,25 +347,10 @@ namespace project
         }
 
         public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            if (playfield.currentTetrominoOrientation == 1){
-                if  (
-                    playfield.currentTetrominoPivotPosition.y + 1 < Playfield.PlayFieldHeight &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y + 1] == Empty &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y    ] == Empty &&
-                    playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty
-                ){
-                    playfield.changeCurrentTetrominoOrientation(2);
-                }
-            }
-            else if (playfield.currentTetrominoOrientation == 2){
-                if  (
-                        playfield.currentTetrominoPivotPosition.x + 1 <Playfield.PlayFieldWidth &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x - 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y - 1] == Empty &&
-                        playfield.grid[playfield.currentTetrominoPivotPosition.x + 1, playfield.currentTetrominoPivotPosition.y    ] == Empty
-                    ){
-                        playfield.changeCurrentTetrominoOrientation(1);
-                }
+            int from = playfield.currentTetrominoOrientation;
+            int to = from % numOfOrientations + 1;
+            if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                playfield.changeCurrentTetrominoOrientation(to);
             }
         }
     }
@@ -922,7 +676,7 @@ namespace project
                         WriteLine($"{p.x},{p.y}");
                     }
                     */
-                    WriteLine(playfield.currentTetrominoOrientation);
+                    //WriteLine(playfield.currentTetrominoOrientation);
                     foreach (Position p in playfield.currentTetromino.orientation(playfield.currentTetrominoOrientation)){
                         g.DrawRectangle(new Pen(Color.Black, 1), new Rectangle(3 + (p.x + currentTetriminoPivot.x) * 29, 3 + (p.y + currentTetriminoPivot.y) * 29, 29, 29));
                         g.FillRectangle(currentTetriminoBrush, 4 + (p.x + currentTetriminoPivot.x) * 29, 4 + (p.y + currentTetriminoPivot.y) * 29, 28, 28);
