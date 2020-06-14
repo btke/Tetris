@@ -29,14 +29,6 @@ namespace project
             for(int i = 0; i < 4; ++i){
                 orientation[i] = new Position(defaultOrientation[i].x,defaultOrientation[i].y);
             }
-            
-            //defaultOrientation.CopyTo(ref orientation, 0);
-            /*
-            WriteLine("start");
-            foreach (Position p in defaultOrientation){
-                WriteLine($"{p.x},{p.y}");
-            }
-            */
             for(int i = 0; i < num - 1; ++i){
                 for(int j = 1; j < 4; ++j){
                     (orientation[j].x, orientation[j].y) = (-orientation[j].y, orientation[j].x);
@@ -60,7 +52,6 @@ namespace project
                 int fromYBound = playfield.currentTetrominoPivotPosition.y + fromOrientation[i].y;
                 int toXBound = playfield.currentTetrominoPivotPosition.x + toOrientation[i].x;
                 int toYBound = playfield.currentTetrominoPivotPosition.y + toOrientation[i].y;
-                WriteLine("here2");
                 if  ( 
                         (fromXBound >= 0 && fromXBound < Playfield.PlayFieldWidth) &&
                         (fromYBound >= 0 && fromYBound < Playfield.PlayFieldHeight) &&
@@ -68,7 +59,6 @@ namespace project
                         (toYBound >= 0 && toYBound < Playfield.PlayFieldHeight)
                     ){
                         // calculate the total distance to pivot if going x direction first
-                        WriteLine("here8");
                         if (incrementX != 0){
                             for (int j = Sign(incrementX); Abs(j) <= Abs(incrementX); j += Sign(incrementX)){
                                 xFirstDistance += Abs(fromOrientation[i].x + j) + Abs(fromOrientation[i].y);
@@ -88,7 +78,6 @@ namespace project
                             }
                         }
                         // calculate the total distance to pivot if going y direction first
-                        WriteLine("here9");
                         if (incrementY != 0){
                             for (int j = Sign(incrementY); Abs(j) <= Abs(incrementY); j += Sign(incrementY)){
                                 yFirstDistance += Abs(fromOrientation[i].x) + Abs(fromOrientation[i].y + j);
@@ -108,24 +97,19 @@ namespace project
                                 }
                             }
                         }
-                        WriteLine("here3");
                     }
                 else{
-                    WriteLine("here4");
                     xFirstRotatable = false;
                     yFirstRotatable = false;
                 }
                 // check that each block is rotatable
-                WriteLine("here5");
                 if  (
                     (xFirstDistance >= yFirstDistance && xFirstRotatable == true) ||
                     (yFirstDistance >= xFirstDistance && yFirstRotatable == true)
                     ){
-                    WriteLine("here6");
                     continue;
                 }
                 else{
-                    WriteLine("here7");
                     return false;
                 }
             }
@@ -280,11 +264,7 @@ namespace project
         public override void orientationTransition(Playfield playfield, KeyEventArgs e){
             int from = playfield.currentTetrominoOrientation;
             int to = from % numOfOrientations + 1;
-            WriteLine("here0");
-            Write(from);
-            Write(to);
             if (orientationTransitionPathSweepCheck(from, to, playfield)){
-                WriteLine("here1");
                 playfield.changeCurrentTetrominoOrientation(to);
             }
         }
@@ -633,7 +613,6 @@ namespace project
 
                     Brush nextTetriminoBrush = playfield.nextTetromino.brush;
                     float centreRelativeToPivot = playfield.nextTetromino.centreRelativeToPivot[playfield.nextTetrominoOrientation];
-                    //WriteLine(centreRelativeToPivot);
                     foreach (Position p in playfield.nextTetromino.orientation(playfield.nextTetrominoOrientation)){
                         g.DrawRectangle(new Pen(Color.Black, 1), new Rectangle(357 + p.x * 29 - (int)(centreRelativeToPivot * 29), 140 + p.y * 29, 29, 29));
                         g.FillRectangle(nextTetriminoBrush, 358 + p.x * 29 - (int)(centreRelativeToPivot * 29), 141 + p.y * 29, 28, 28);
@@ -668,15 +647,6 @@ namespace project
                     //draw the current falling tetrimino
                     Brush currentTetriminoBrush = playfield.currentTetromino.brush;
                     Position currentTetriminoPivot = playfield.currentTetrominoPivotPosition;
-                    /*
-                    WriteLine("start");
-                    WriteLine(playfield.currentTetrominoOrientation);
-                    foreach (Position p in playfield.currentTetromino.orientation(playfield.currentTetrominoOrientation)){
-                        
-                        WriteLine($"{p.x},{p.y}");
-                    }
-                    */
-                    //WriteLine(playfield.currentTetrominoOrientation);
                     foreach (Position p in playfield.currentTetromino.orientation(playfield.currentTetrominoOrientation)){
                         g.DrawRectangle(new Pen(Color.Black, 1), new Rectangle(3 + (p.x + currentTetriminoPivot.x) * 29, 3 + (p.y + currentTetriminoPivot.y) * 29, 29, 29));
                         g.FillRectangle(currentTetriminoBrush, 4 + (p.x + currentTetriminoPivot.x) * 29, 4 + (p.y + currentTetriminoPivot.y) * 29, 28, 28);
