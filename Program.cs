@@ -116,7 +116,22 @@ namespace project
             return sweepCheck;
         }
         public abstract float[] centreRelativeToPivot {get;}
-        public abstract void orientationTransition(Playfield playfield, KeyEventArgs e);
+        public void orientationTransition(Playfield playfield, KeyEventArgs e){
+            int from = playfield.currentTetrominoOrientation;
+            int to;
+            if (e.KeyCode == Keys.D){
+                to = from % numOfOrientations + 1;
+                if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                    playfield.changeCurrentTetrominoOrientation(to);
+                }
+            }
+            else if (e.KeyCode == Keys.A){
+                to = (from + numOfOrientations - 2) % numOfOrientations + 1;
+                if (orientationTransitionPathSweepCheck(from, to, playfield)){
+                    playfield.changeCurrentTetrominoOrientation(to);
+                }
+            }
+        }
     }
 
     class I: Tetromino{
@@ -134,13 +149,6 @@ namespace project
         public override float[] centreRelativeToPivot {
             get{
                 return new float[3]{0, (float)0.5, 0};
-            }
-        }
-        public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            int from = playfield.currentTetrominoOrientation;
-            int to = from % numOfOrientations + 1;
-            if (orientationTransitionPathSweepCheck(from, to, playfield)){
-                playfield.changeCurrentTetrominoOrientation(to);
             }
         }
     }
@@ -163,23 +171,6 @@ namespace project
                 return new float[5]{0, 1, (float)0.5, -1, (float)-0.5};
             }
         }
-
-        public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            int from = playfield.currentTetrominoOrientation;
-            int to;
-            if (e.KeyCode == Keys.D){
-                to = from % numOfOrientations + 1;
-                if (orientationTransitionPathSweepCheck(from, to, playfield)){
-                    playfield.changeCurrentTetrominoOrientation(to);
-                }
-            }
-            else if (e.KeyCode == Keys.A){
-                to = (from + 2) % numOfOrientations + 1;
-                if (orientationTransitionPathSweepCheck(from, to, playfield)){
-                    playfield.changeCurrentTetrominoOrientation(to);
-                }
-            }
-        }
     }
 
     class L: Tetromino{
@@ -198,23 +189,6 @@ namespace project
         public override float[] centreRelativeToPivot {
             get{
                 return new float[5]{0, -1, (float)0.5, 1, (float)-0.5};
-            }
-        }
-
-        public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            int from = playfield.currentTetrominoOrientation;
-            int to;
-            if (e.KeyCode == Keys.D){
-                to = from % numOfOrientations + 1;
-                if (orientationTransitionPathSweepCheck(from, to, playfield)){
-                    playfield.changeCurrentTetrominoOrientation(to);
-                }
-            }
-            else if (e.KeyCode == Keys.A){
-                to = (from + 2) % numOfOrientations + 1;
-                if (orientationTransitionPathSweepCheck(from, to, playfield)){
-                    playfield.changeCurrentTetrominoOrientation(to);
-                }
             }
         }
     }
@@ -237,10 +211,6 @@ namespace project
                 return new float[2]{0, (float)0.5};
             }
         }
-
-        public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            
-        }
     }
 
     class S: Tetromino{
@@ -259,13 +229,6 @@ namespace project
         public override float[] centreRelativeToPivot {
             get{
                 return new float[3]{0, 0, (float)0.5};
-            }
-        }
-        public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            int from = playfield.currentTetrominoOrientation;
-            int to = from % numOfOrientations + 1;
-            if (orientationTransitionPathSweepCheck(from, to, playfield)){
-                playfield.changeCurrentTetrominoOrientation(to);
             }
         }
     }
@@ -288,23 +251,6 @@ namespace project
                 return new float[5]{0, 0, (float)0.5, 0, (float)-0.5};
             }
         }
-
-        public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            int from = playfield.currentTetrominoOrientation;
-            int to;
-            if (e.KeyCode == Keys.D){
-                to = from % numOfOrientations + 1;
-                if (orientationTransitionPathSweepCheck(from, to, playfield)){
-                    playfield.changeCurrentTetrominoOrientation(to);
-                }
-            }
-            else if (e.KeyCode == Keys.A){
-                to = (from + 2) % numOfOrientations + 1;
-                if (orientationTransitionPathSweepCheck(from, to, playfield)){
-                    playfield.changeCurrentTetrominoOrientation(to);
-                }
-            }
-        }
     }
 
     class Z: Tetromino{
@@ -323,14 +269,6 @@ namespace project
         public override float[] centreRelativeToPivot {
             get{
                 return new float[3]{0, 0, (float)-0.5};
-            }
-        }
-
-        public override void orientationTransition(Playfield playfield, KeyEventArgs e){
-            int from = playfield.currentTetrominoOrientation;
-            int to = from % numOfOrientations + 1;
-            if (orientationTransitionPathSweepCheck(from, to, playfield)){
-                playfield.changeCurrentTetrominoOrientation(to);
             }
         }
     }
